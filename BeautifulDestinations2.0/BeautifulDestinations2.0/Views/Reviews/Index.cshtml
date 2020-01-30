@@ -1,0 +1,52 @@
+﻿@model IEnumerable<BeautifulDestinations2._0.Models.Review>
+
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.userEmail)
+              
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
+           
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                <img style="width:50px;height:50px; margin-left:10px;" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png" /><br />
+            </td>
+            <td>
+                @item.userEmail
+            </td>
+            <td>
+                @item.Comment
+            </td>
+
+          
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

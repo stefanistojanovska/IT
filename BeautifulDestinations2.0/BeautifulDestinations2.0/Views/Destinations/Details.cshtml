@@ -1,0 +1,186 @@
+﻿@model BeautifulDestinations2._0.Models.DestRevViewModel
+
+@{
+//Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    @Styles.Render("~/Content/css")
+    <div style="background-color:#202020">
+        <h1 style="color:darkgrey;padding:10px">
+           
+            @Model.destination.Name
+            @for (int i = 0; i < Math.Floor(Model.destination.overallRating); i++)
+            {
+                <img style="width:20px;height20px" src="https://scontent.fskg1-2.fna.fbcdn.net/v/t1.15752-9/83254081_181180609634833_7860049069488472064_n.png?_nc_cat=101&_nc_ohc=otR6EfMhO4UAX-zslw-&_nc_ht=scontent.fskg1-2.fna&oh=12fbd4df3628c7f6b730cd438a07f17e&oe=5ECE5126" />
+            }
+            @if (Model.destination.overallRating*10 % 10 != 0)
+            {
+
+                <img style="width:20px;height:20px" src="https://scontent.fskg1-1.fna.fbcdn.net/v/t1.15752-9/83099283_2592225447713931_2029954719803244544_n.png?_nc_cat=108&_nc_ohc=XjlA9iRG0AcAX8k4woC&_nc_ht=scontent.fskg1-1.fna&oh=e298bfe8d2555347758530633f85f287&oe=5E9671C6" />
+            }
+            @for (int i = 0; i < Math.Floor(5 - Model.destination.overallRating); i++)
+            {
+                <img style="width:20px;height:20px" src="https://scontent.fskg1-1.fna.fbcdn.net/v/t1.15752-9/84226597_201990460845536_4426734302776000512_n.png?_nc_cat=110&_nc_ohc=4oQNDlYcLYQAX-2En4F&_nc_ht=scontent.fskg1-1.fna&oh=8e6e1ce04b2a52b7731f1df9348dfefd&oe=5ECEB88B" />
+            }
+        </h1>
+                <hr />
+                <table>
+                    <tr>
+                        <td style="padding-left:30px;">
+                            <img style="height:500px;width:700px;" src="@Model.destination.ImgUrl" />
+                        </td>
+                        <td style="padding-left:20px;text-align:justify;color:darkgrey;padding-right:20px;font-size:16px;">
+                            <p style="height:200px;">@Model.destination.Description</p><br /><hr />
+
+
+                            <p>
+                                @using (Html.BeginForm("Create", "Reviews", FormMethod.Post))
+                                {
+
+                                    @Html.AntiForgeryToken()
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.review.Comment, htmlAttributes: new { @class = "control-label col-md-2" })<br />
+                                        <div class="col-md-10" style="width:300px;">
+                                            @Html.EditorFor(model => model.review.Comment, new { htmlAttributes = new { @class = "form-control", height = "50px;" } })
+                                            @Html.ValidationMessageFor(model => model.review.Comment, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.review.Rating, htmlAttributes: new { @class = "control-label col-md-2" })<br /><br />
+                                        <div class="col-md-10" style="width:300px;">
+                                            @Html.EditorFor(model => model.review.Rating, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.review.Rating, "", new { type = "number", @min = "0", max = "5", @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="display:none">
+                                        @Html.LabelFor(model => model.review.Destination, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            @Html.EditorFor(model => model.review.Destination, new { htmlAttributes = new { @Value = Model.destination.id, @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.review.Destination, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div><br />
+                                    if ((System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+                                    {
+                                        <div class="form-group">
+                                            <div class=" col-md-offset-2 col-md-10">
+                                                <input type="submit" value="Create" class="btn btn-default" />
+                                            </div>
+                                        </div>
+                                    }
+
+
+
+                                    else
+                                    {
+
+                                        <div>
+                                            
+                                            <div class="col-md-offset-2 col-md-10">
+                                                <input disabled="disabled" type="submit" value="Create" class="btn btn-default" /><span style="color:red;font-size:10px;"> You need to be logged in to add a review!</span>
+                                            </div>
+                                        </div>
+
+                                    }
+
+
+                                }
+
+
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <p style="margin-left:320px;">
+                    @{
+
+                        long[] ids = ViewBag.Ids;
+                        int tekoven = 0;
+                    }
+                    @for (int i = 0; i < ids.Length; i++)
+                    {
+                        if (ids[i] == Model.destination.id)
+                        {
+                            tekoven = i;
+                            break;
+                        }
+                    }
+                    @if (tekoven == 0)
+                    {
+                        @Html.ActionLink("◀", "Details", new { id = ids[ids.Length - 1] }, new { @class = "btn btn-default " })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("◀", "Details", new { id = ids[tekoven - 1] }, new { @class = "btn btn-default " })
+                    }
+
+                    @if (tekoven == ids.Length - 1)
+                    {
+                        @Html.ActionLink("▶", "Details", new { id = ids[0] }, new { @class = "btn btn-default " })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("▶", "Details", new { id = ids[tekoven + 1] }, new { @class = "btn btn-default " })
+                    }
+
+
+
+
+                    @if (this.User.IsInRole("Admin"))
+                    {
+                        <span>@Html.ActionLink("Edit", "Edit", new { id = Model.destination.id }) | </span>
+                    }
+                    @Html.ActionLink("Back to List", "Index")
+
+                </p>
+
+</div>
+    <table>
+        <tr>
+            <td style="width:720px;">
+                @foreach(var r in Model.reviews)
+                {
+                    <table >
+                        <tr style="background-color:#202020;padding:5px;color:white; border-radius:25px;">
+                            <td>
+                                <img style="width:50px;height:50px; margin-left:10px;" src="https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/user.png"/><br />
+                               
+                            </td>
+                            <td style="padding-left:10px;">
+                                <span style="text-decoration:underline">@r.userEmail</span> says<br />
+                                <span style="text-align:justify"><i>"@r.Comment"</i></span>
+                            </td>
+                            <td style="height:20px; width:10px;">
+                                @for (int i = 0; i < r.Rating; i++)
+                                {
+                                    <img style="width:20px;height20px" src="https://scontent.fskg1-2.fna.fbcdn.net/v/t1.15752-9/83254081_181180609634833_7860049069488472064_n.png?_nc_cat=101&_nc_ohc=otR6EfMhO4UAX-zslw-&_nc_ht=scontent.fskg1-2.fna&oh=12fbd4df3628c7f6b730cd438a07f17e&oe=5ECE5126" />
+                                }
+                               
+                                @for (int i = 0; i < 5 - r.Rating; i++)
+                                {
+                                    <img style="width:20px;height:20px" src="https://scontent.fskg1-1.fna.fbcdn.net/v/t1.15752-9/84226597_201990460845536_4426734302776000512_n.png?_nc_cat=110&_nc_ohc=4oQNDlYcLYQAX-2En4F&_nc_ht=scontent.fskg1-1.fna&oh=8e6e1ce04b2a52b7731f1df9348dfefd&oe=5ECEB88B" />
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                    <hr />
+                }
+            </td>
+            <td style="width:200px">
+              
+               
+                
+            </td>
+        </tr>
+    </table>
+    
+</body>
+</html>
